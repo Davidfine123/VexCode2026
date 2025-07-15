@@ -75,11 +75,7 @@ void initialize() {
                                     conveyor.getHooks()->getMotor()->get_current_draw());
                 pros::screen::print(pros::text_format_e_t::E_TEXT_MEDIUM_CENTER, 5, "Conveyor reverse: %s",
                                     conveyor.is_reversed() ? "True" : "False");
-                pros::screen::print(pros::text_format_e_t::E_TEXT_MEDIUM_CENTER, 6, "Arm Rotation: %d",
-                                    arm.getRotation()->get_position());
-                pros::screen::print(pros::text_format_e_t::E_TEXT_MEDIUM_CENTER, 7, "Arm Manual: %s",
-                                    arm.getManual() ? "True" : "False");
-                pros::screen::print(pros::text_format_e_t::E_TEXT_MEDIUM_CENTER, 8, "Arm State: %s", arm.getState());
+               
                 pros::screen::print(pros::text_format_e_t::E_TEXT_MEDIUM_CENTER, 9, "Mogo holder detected: %s",
                                     holder.detectedMogo() ? "True" : "False");
                 // pros::screen::print(pros::text_format_e_t::E_TEXT_MEDIUM_CENTER, 10, "Particle filter size: %d",
@@ -224,7 +220,7 @@ void opcontrol() {
 
     if (RUN_SKILLS) {
         // Need to comment out for normal driving
-        arm.resetRotation(1800);
+        //arm.resetRotation(1800);
         // conveyor.disable_color_sensor();
     }
 
@@ -262,7 +258,7 @@ void opcontrol() {
         // Move the chassis with arcade drive
         chassis.arcade(leftY, rightX);
         // Control subsystems based on button inputs
-        arm.control(buttonR2, buttonY, buttonRight, buttonUp);
+        //arm.control(buttonR2, buttonY, buttonRight, buttonUp);
         conveyor.control(buttonL1, buttonL2, buttonDown, buttonB);
         holder.control(buttonR1);
         doinker.control(buttonLeft);

@@ -1,24 +1,27 @@
 #pragma once
 
 #include "lemlib/timer.hpp"
+#include "subsystem.hpp"
 #include "spinner.hpp"
 #include <cmath>
+#include "pros/optical.hpp"
 
 namespace ConveyorNamespace {
 
-enum class State { STOP, FORWARDS, REVERSE, INTAKE_FORWARD, INTAKE_REVERSE };
+enum class State { STOP, Intake, LowGoal, MiddleGoal, HighGoal };
 
 enum Color { RED = 0, BLUE = 1 };
 
 class Conveyor : public subsystem<ConveyorNamespace::State> {
     public:
-        Conveyor(SpinnerNamespace::Spinner* intake, SpinnerNamespace::Spinner* hooks,
+        Conveyor(SpinnerNamespace::Spinner* bottomRoller, SpinnerNamespace::Spinner* insideRoller, SpinnerNamespace::Spinner* scoreRoller,
                  std::shared_ptr<pros::Optical> optical_sensor, std::shared_ptr<pros::Distance> distance)
-            : intake_(std::move(intake)),
-              hooks_(std::move(hooks)), 
+            : bottomRoller_(std::move(bottomRoller)),
+              insideRoller_(std::move(insideRoller)),
+              scoreRoller_(std::move(scoreRoller)),
               optical_sensor_(std::move(optical_sensor)),
               distance_(std::move(distance)) {
-            hooks_->getMotor()->set_brake_mode(pros::MotorBrake::brake);
+            //insideRoller_->getMotor()->set_brake_mode(pros::MotorBrake::brake);
         }
 
         ~Conveyor() override = default;
@@ -26,16 +29,17 @@ class Conveyor : public subsystem<ConveyorNamespace::State> {
         void setInitColor(const Color color) { init_color_ = color; }
 
         // Control conveyor direction based on buttons
-        void control(bool button_forwards, bool button_reverse, bool button_intake_forward, bool button_intake_reverse) {
+        void control(bool button_intake, bool button_low_goal, bool button_middle_goal, bool button_high_goal,
+                     bool button_intake_forward, bool button_intake_reverse) {
 
-            if (button_forwards)  {
-                currState = ConveyorNamespace::State::FORWARDS;
-            } else if (button_reverse) {
-                currState = ConveyorNamespace::State::REVERSE;
+            if (button_intake)  {
+                currState = ConveyorNamespace::State::Intake;
+            } else if (button_low_goal) {
+                currState = ConveyorNamespace::State::LowGoal;
             } else if (button_intake_forward) {
-                currState = ConveyorNamespace::State::INTAKE_FORWARD;
+                currState = ConveyorNamespace::State::MiddleGoal;
             } else if (button_intake_reverse) {
-                currState = ConveyorNamespace::State::INTAKE_REVERSE;
+                currState = ConveyorNamespace::State::HighGoal;
             } else {
                 currState = ConveyorNamespace::State::STOP;
             }

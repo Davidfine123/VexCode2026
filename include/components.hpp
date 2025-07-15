@@ -1,6 +1,10 @@
 #pragma once
-#include "main.h"
 #include "lemlib/api.hpp" // IWYU pragma: keep
+#include "subsystems/conveyor.hpp"
+#include "subsystems/spinner.hpp"
+#include "subsystems/holder.hpp"
+#include "pros/adi.hpp"
+
 
 // controller
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
@@ -10,28 +14,30 @@ pros::MotorGroup leftMotors({-18, -20, 19},
                             pros::MotorGearset::blue); // left motor group - ports 10, 8 (reversed), 7
 pros::MotorGroup rightMotors({8, 10, -9},
                              pros::MotorGearset::blue); // right motor group - ports 1 (reversed), 2 , 3 (reversed)
-
-lemlib::ControllerSettings armAngularController(2, // proportional gain (kP)
-                                                0, // integral gain (kI)
-                                                10, // derivative gain (kD)
-                                                3, // anti windup
-                                                0.5, // small error range, in degrees
-                                                100, // small error range timeout, in milliseconds
-                                                1, // large error range, in degrees
-                                                500, // large error range timeout, in milliseconds
-                                                0 // maximum acceleration (slew)
-);
-
-lemlib::ControllerSettings armAngularControllerSmallAngle(2, // proportional gain (kP)
-                                                0, // integral gain (kI)
-                                                10, // derivative gain (kD)
-                                                3, // anti windup
-                                                0.5, // small error range, in degrees
-                                                100, // small error range timeout, in milliseconds
-                                                1, // large error range, in degrees
-                                                500, // large error range timeout, in milliseconds
-                                                0 // maximum acceleration (slew)
-);
+//No Arm Use this year
+// lemlib::ControllerSettings armAngularController(2, // proportional gain (kP)
+//                                                 0, // integral gain (kI)
+//                                                 10, // derivative gain (kD)
+//                                                 3, // anti windup
+//                                                 0.5, // small error range, in degrees
+//                                                 100, // small error range timeout, in milliseconds
+//                                                 1, // large error range, in degrees
+//                                                 500, // large error range timeout, in milliseconds
+//                                                 0 // maximum acceleration (slew)
+// );
+// ArmNamespace::Arm arm(std::make_shared<pros::Motor>(6, pros::v5::MotorGears::red), // arm - motor port 5 (reversed)
+//                       std::make_shared<pros::Rotation>(-21), // rotation sensor - port 17 (reversed)
+//                       armAngularController, armAngularControllerSmallAngle); // PID controller
+// lemlib::ControllerSettings armAngularControllerSmallAngle(2, // proportional gain (kP)
+//                                                 0, // integral gain (kI)
+//                                                 10, // derivative gain (kD)
+//                                                 3, // anti windup
+//                                                 0.5, // small error range, in degrees
+//                                                 100, // small error range timeout, in milliseconds
+//                                                 1, // large error range, in degrees
+//                                                 500, // large error range timeout, in milliseconds
+//                                                 0 // maximum acceleration (slew)
+// );
 
 // Other Subsystems
 std::unordered_map<std::string, std::shared_ptr<pros::Distance>> distances {
@@ -40,13 +46,13 @@ std::unordered_map<std::string, std::shared_ptr<pros::Distance>> distances {
     {"front", std::make_shared<pros::Distance>(11)}};
 
 pros::Distance clampSensor(3); // distance sensor - port 4
-ArmNamespace::Arm arm(std::make_shared<pros::Motor>(6, pros::v5::MotorGears::red), // arm - motor port 5 (reversed)
-                      std::make_shared<pros::Rotation>(-21), // rotation sensor - port 17 (reversed)
-                      armAngularController, armAngularControllerSmallAngle); // PID controller
-SpinnerNamespace::Spinner intake(std::make_shared<pros::Motor>(-4, pros::v5::MotorGears::green)); // intake - motor port 7
-SpinnerNamespace::Spinner hooks(std::make_shared<pros::Motor>(7, pros::v5::MotorGears::green)); // hooks - motor port 11
-ConveyorNamespace::Conveyor conveyor(&intake, // intake
-                                     &hooks, // hooks
+
+SpinnerNamespace::Spinner bottomRoller(std::make_shared<pros::Motor>(-4, pros::v5::MotorGears::green)); // intake - motor port 7
+SpinnerNamespace::Spinner insideRoller(std::make_shared<pros::Motor>(7, pros::v5::MotorGears::green)); // hooks - motor port 11
+SpinnerNamespace::Spinner scoreRoller(std::make_shared<pros::Motor>(8, pros::v5::MotorGears::blue)); // hooks - motor port 11
+ConveyorNamespace::Conveyor conveyor(&bottomRoller, // intake
+                                     &insideRoller, // hooks
+                                     &scoreRoller, // score roller
                                      std::make_shared<pros::Optical>(15), // optical sensor - port 14
                                      std::make_shared<pros::Distance>(1) // distance sensor - port 20
 );

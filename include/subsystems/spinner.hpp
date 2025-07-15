@@ -1,5 +1,5 @@
 #pragma once
-
+#include "subsystem.hpp"
 #include "pros/motors.hpp"
 
 namespace SpinnerNamespace {
