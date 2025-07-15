@@ -1,3 +1,4 @@
+#include "robodash/views/selector.hpp"
 #include "blue_solo.hpp"
 #include "world_blue_2plus2.hpp"
 #include "red_solo.hpp"

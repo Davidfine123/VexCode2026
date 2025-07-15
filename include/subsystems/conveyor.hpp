@@ -8,7 +8,7 @@
 
 namespace ConveyorNamespace {
 
-enum class State { STOP, Intake, LowGoal, MiddleGoal, HighGoal };
+enum class State { STOP, INTAKE, LOWGOAL, MIDDLEGOAL, HIGHGOAL };
 
 enum Color { RED = 0, BLUE = 1 };
 
@@ -29,17 +29,16 @@ class Conveyor : public subsystem<ConveyorNamespace::State> {
         void setInitColor(const Color color) { init_color_ = color; }
 
         // Control conveyor direction based on buttons
-        void control(bool button_intake, bool button_low_goal, bool button_middle_goal, bool button_high_goal,
-                     bool button_intake_forward, bool button_intake_reverse) {
+        void control(bool button_intake, bool button_low_goal, bool button_middle_goal, bool button_high_goal) {
 
             if (button_intake)  {
-                currState = ConveyorNamespace::State::Intake;
+                currState = ConveyorNamespace::State::INTAKE;
             } else if (button_low_goal) {
-                currState = ConveyorNamespace::State::LowGoal;
-            } else if (button_intake_forward) {
-                currState = ConveyorNamespace::State::MiddleGoal;
-            } else if (button_intake_reverse) {
-                currState = ConveyorNamespace::State::HighGoal;
+                currState = ConveyorNamespace::State::LOWGOAL;
+            } else if (button_middle_goal) {
+                currState = ConveyorNamespace::State::MIDDLEGOAL;
+            } else if (button_high_goal) {
+                currState = ConveyorNamespace::State::HIGHGOAL;
             } else {
                 currState = ConveyorNamespace::State::STOP;
             }
@@ -68,9 +67,11 @@ class Conveyor : public subsystem<ConveyorNamespace::State> {
         // Get the initial wrong hue value
         Color getInitColor() const { return init_color_; }
 
-        SpinnerNamespace::Spinner* getIntake() { return intake_; }
+        SpinnerNamespace::Spinner* getBottomRoller() { return bottomRoller_; }
 
-        SpinnerNamespace::Spinner* getHooks() { return hooks_; }
+        SpinnerNamespace::Spinner* getInsideRoller() { return insideRoller_; }
+
+        SpinnerNamespace::Spinner* getScoreRoller() { return scoreRoller_; }
 
         // Get the optical sensor object
         std::shared_ptr<pros::Optical> getOpticalSensor() { return optical_sensor_; }
@@ -100,8 +101,9 @@ class Conveyor : public subsystem<ConveyorNamespace::State> {
         //     hooks_->moveToState(state); // Move forward normally
         // }
     private:
-        SpinnerNamespace::Spinner* intake_;
-        SpinnerNamespace::Spinner* hooks_;
+        SpinnerNamespace::Spinner* bottomRoller_;
+        SpinnerNamespace::Spinner* insideRoller_;
+        SpinnerNamespace::Spinner* scoreRoller_;
         std::shared_ptr<pros::Optical> optical_sensor_ = nullptr;
         std::shared_ptr<pros::Distance> distance_ = nullptr;
         Color init_color_;
@@ -115,36 +117,31 @@ class Conveyor : public subsystem<ConveyorNamespace::State> {
                 moveToState(ConveyorNamespace::State::STOP);
                 timer.set(0);
             }
-            if (currState == ConveyorNamespace::State::FORWARDS) {
-                if (enable_color_sensor_ && detectWrongRing()) reverse_ = true;
-                if (reverse_ && distance_ != nullptr && distance_->get_distance() < DIST_THRESHOLD) {
-                    intake_->moveToState(SpinnerNamespace::State::FORWARD);
-                    hooks_->moveToState(SpinnerNamespace::State::FORWARD);
-                    pros::delay(170);
-
-                    intake_->moveToState(SpinnerNamespace::State::BACKWARD);
-                    hooks_->moveToState(SpinnerNamespace::State::BACKWARD);
-                    pros::delay(300);
-                    reverse_ = false;
-                }
-                intake_->moveToState(SpinnerNamespace::State::FORWARD);
-                hooks_->moveToState(SpinnerNamespace::State::FORWARD);
+            if (currState == ConveyorNamespace::State::INTAKE) {
+                
+                bottomRoller_->moveToState(SpinnerNamespace::State::FORWARD);
+                insideRoller_->moveToState(SpinnerNamespace::State::FORWARD);
+                scoreRoller_->moveToState(SpinnerNamespace::State::FORWARD);
             }
-            if (currState == ConveyorNamespace::State::REVERSE) {
-                intake_->moveToState(SpinnerNamespace::State::BACKWARD);
-                hooks_->moveToState(SpinnerNamespace::State::BACKWARD);               
+            if (currState == ConveyorNamespace::State::LOWGOAL) {
+                bottomRoller_->moveToState(SpinnerNamespace::State::BACKWARD);
+                insideRoller_->moveToState(SpinnerNamespace::State::BACKWARD);
+                scoreRoller_->moveToState(SpinnerNamespace::State::IDLE);
             }
-            if (currState == ConveyorNamespace::State::INTAKE_FORWARD) {
-                intake_->moveToState(SpinnerNamespace::State::FORWARD);
-                hooks_->moveToState(SpinnerNamespace::State::IDLE);
+            if (currState == ConveyorNamespace::State::MIDDLEGOAL) {
+                bottomRoller_->moveToState(SpinnerNamespace::State::FORWARD);
+                insideRoller_->moveToState(SpinnerNamespace::State::BACKWARD);
+                scoreRoller_->moveToState(SpinnerNamespace::State::IDLE);
             }
-            if (currState == ConveyorNamespace::State::INTAKE_REVERSE) {
-                intake_->moveToState(SpinnerNamespace::State::BACKWARD);
-                hooks_->moveToState(SpinnerNamespace::State::IDLE);
+            if (currState == ConveyorNamespace::State::HIGHGOAL) {
+                bottomRoller_->moveToState(SpinnerNamespace::State::FORWARD);
+                insideRoller_->moveToState(SpinnerNamespace::State::BACKWARD);
+                scoreRoller_->moveToState(SpinnerNamespace::State::BACKWARD);
             }
             if (currState == ConveyorNamespace::State::STOP) {
-                intake_->moveToState(SpinnerNamespace::State::IDLE);
-                hooks_->moveToState(SpinnerNamespace::State::IDLE);
+                bottomRoller_->moveToState(SpinnerNamespace::State::IDLE);
+                insideRoller_->moveToState(SpinnerNamespace::State::IDLE);
+                scoreRoller_->moveToState(SpinnerNamespace::State::IDLE);
             }
             // if (enable_color_sensor_ and detectWrongRing()) reverse_ = true;
 
