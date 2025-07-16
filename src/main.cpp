@@ -188,7 +188,7 @@ void opcontrol() {
         //arm.control(buttonR2, buttonY, buttonRight, buttonUp);
 
         conveyor.control(buttonL1, buttonL2, buttonR1, buttonR2);
-        
+
         // Delay to save resources
         pros::delay(10);
     }

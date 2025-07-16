@@ -3,7 +3,6 @@
 #include "subsystems/conveyor.hpp"
 #include "subsystems/spinner.hpp"
 #include "subsystems/holder.hpp"
-#include "pros/adi.hpp"
 
 
 // controller
