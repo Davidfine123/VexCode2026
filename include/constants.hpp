@@ -1,7 +1,7 @@
 #pragma once
 
 // Auton Selection
-constexpr bool autonSelector = true;
+constexpr bool autonSelector = false;
 
 // Arm
 constexpr float MAX_DEGREES = 23000.0f; // 150 degrees

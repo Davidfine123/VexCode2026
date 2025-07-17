@@ -1,6 +1,7 @@
 #pragma once
 
 #include "lemlib/timer.hpp"
+#include "pros/abstract_motor.hpp"
 #include "subsystem.hpp"
 #include "spinner.hpp"
 #include <cmath>
@@ -19,8 +20,14 @@ class Conveyor : public subsystem<ConveyorNamespace::State> {
             : bottomRoller_(std::move(bottomRoller)),
               insideRoller_(std::move(insideRoller)),
               scoreRoller_(std::move(scoreRoller)),
-              optical_sensor_(std::move(optical_sensor)),
+                optical_sensor_(std::move(optical_sensor)),
               distance_(std::move(distance)) {
+
+              
+              bottomRoller_ ->getMotor()->set_brake_mode(pros::MotorBrake::coast);
+              insideRoller_ ->getMotor()->set_brake_mode(pros::MotorBrake::coast);
+              scoreRoller_ ->getMotor()->set_brake_mode(pros::MotorBrake::coast);
+
             //insideRoller_->getMotor()->set_brake_mode(pros::MotorBrake::brake);
         }
 
@@ -162,4 +169,4 @@ class Conveyor : public subsystem<ConveyorNamespace::State> {
             // }
         }
 };
-} // namespace ConveyorNamespace
+}  
