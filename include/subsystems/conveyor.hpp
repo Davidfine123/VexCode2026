@@ -133,17 +133,17 @@ class Conveyor : public subsystem<ConveyorNamespace::State> {
             if (currState == ConveyorNamespace::State::LOWGOAL) {
                 bottomRoller_->moveToState(SpinnerNamespace::State::BACKWARD);
                 insideRoller_->moveToState(SpinnerNamespace::State::BACKWARD);
-                scoreRoller_->moveToState(SpinnerNamespace::State::IDLE);
+                scoreRoller_->moveToState(SpinnerNamespace::State::FORWARD);
             }
             if (currState == ConveyorNamespace::State::MIDDLEGOAL) {
                 bottomRoller_->moveToState(SpinnerNamespace::State::FORWARD);
                 insideRoller_->moveToState(SpinnerNamespace::State::BACKWARD);
-                scoreRoller_->moveToState(SpinnerNamespace::State::IDLE);
+                scoreRoller_->moveToState(SpinnerNamespace::State::BACKWARD);
             }
             if (currState == ConveyorNamespace::State::HIGHGOAL) {
                 bottomRoller_->moveToState(SpinnerNamespace::State::FORWARD);
                 insideRoller_->moveToState(SpinnerNamespace::State::BACKWARD);
-                scoreRoller_->moveToState(SpinnerNamespace::State::BACKWARD);
+                scoreRoller_->moveToState(SpinnerNamespace::State::FORWARD);
             }
             if (currState == ConveyorNamespace::State::STOP) {
                 bottomRoller_->moveToState(SpinnerNamespace::State::IDLE);

@@ -187,7 +187,7 @@ void opcontrol() {
         // Control subsystems based on button inputs
         //arm.control(buttonR2, buttonY, buttonRight, buttonUp);
 
-        conveyor.control(buttonL1, buttonL2, buttonR1, buttonR2);
+        conveyor.control(buttonL1, buttonL2, buttonR2, buttonR1);
 
         // Delay to save resources
         pros::delay(10);
