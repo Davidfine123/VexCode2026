@@ -8,9 +8,9 @@
 inline pros::Controller controller(pros::E_CONTROLLER_MASTER);
 
 // motor groups
-inline pros::MotorGroup leftMotors({-10, 9, -8},
+inline pros::MotorGroup leftMotors({-12, 11, -16},
                             pros::MotorGearset::blue); // left motor group - ports
-inline pros::MotorGroup rightMotors({-2, 3, 4},
+inline pros::MotorGroup rightMotors({-5, 6, 7},
                              pros::MotorGearset::blue); // right motor group - ports 
 
 
@@ -20,9 +20,9 @@ inline std::unordered_map<std::string, std::shared_ptr<pros::Distance>> distance
     {"right", std::make_shared<pros::Distance>(0)},
     {"front", std::make_shared<pros::Distance>(0)}};
 
-inline SpinnerNamespace::Spinner bottomRoller(std::make_shared<pros::Motor>(20, pros::v5::MotorGears::green)); // intake - motor port 
-inline SpinnerNamespace::Spinner insideRoller(std::make_shared<pros::Motor>(-21, pros::v5::MotorGears::green));
-inline SpinnerNamespace::Spinner scoreRoller(std::make_shared<pros::Motor>(11, pros::v5::MotorGears::blue)); // hooks - motor port 
+inline SpinnerNamespace::Spinner bottomRoller(std::make_shared<pros::Motor>(3, pros::v5::MotorGears::green)); // intake - motor port 
+inline SpinnerNamespace::Spinner insideRoller(std::make_shared<pros::Motor>(1, pros::v5::MotorGears::green));
+inline SpinnerNamespace::Spinner scoreRoller(std::make_shared<pros::Motor>(2, pros::v5::MotorGears::blue)); // hooks - motor port 
 inline ConveyorNamespace::Conveyor conveyor(&bottomRoller, // intake
                                      &insideRoller, // hooks
                                      &scoreRoller, // score roller
